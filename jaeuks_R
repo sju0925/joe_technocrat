@@ -1,0 +1,74 @@
+###R기초###
+
+
+#install.packages("readxl")
+library(readxl)
+
+getwd()
+setwd('C:/Users/USER/Desktop/ls_예제데이터_조교전달용') #working directory 설정
+
+my_data <- read.csv('kospi.csv') #
+dim(my_data)
+head(my_data)
+#write.csv(my_data, 'kospi_my.csv', row.names=F, na='') 
+
+##ggplot을 diamonds 데이터 활용
+#install.packages('ggplot2')
+library(ggplot2)
+head(diamonds)
+#write.csv(diamonds, 'diamonds.csv', row.names=F, na='')  ##저장
+
+
+library() #설치된 패키지 확인
+data() #내장 데이터프레임 확인
+dim(diamonds)
+my_data<-diamonds
+head(my_data)
+tail(my_data)
+View(my_data)
+str(my_data) #데이터구조 및 속성 확인
+summary(my_data) #기술통계량
+
+
+###데이터프레임 변수 바꾸기(dplyr를 이용)
+install.packages("dplyr")
+library(dplyr)
+
+my_data %>% select(color) ##(color 열 추출) #%>%는 함수를 전달
+my_data %>% select(color, clarity, depth)
+my_data %>% select(-color)
+
+df1<-my_data %>% select(carat)
+df2<-my_data %>% select(-carat)
+
+#파생변수 추가하기(mutate함수)
+my_data %>% mutate(total=carat+depth+table+price, mean=(carat+depth)/2) %>% head
+
+
+#데이터 합치기
+df<-cbind(df1,df2) #(열들을 결합)
+head(df)
+
+#결측치 찾기
+is.na(df) #결측치면 TRUE
+table(is.na(df))
+table(is.na(df$carat))
+
+df %>% filter(is.na(carat)) #결측치가 있는 행만 추출
+df %>% filter(!is.na(carat)&!is.na(color)) #결측치가 없는 행만 추
+
+#평균값으로 결측치 대체하기
+mean(df$carat, na.rm=T) # na.rm가 T이면 결측치를 빼고 평균계산 아니면 summary로 평균구해줌
+df$carat <- ifelse(is.na(df$carat), 0.7979397, df$carat) #평균이 0.7979397였다면
+table(is.na(df$carat)) #확인
+
+####텍스트 마이닝 전/후 처리
+
+#install.packages('stringr')
+library(stringr)
+txt<-readLines(file.choose())
+txt
+txt <- str_replace_all(txt, "\\W", "") ##특수문자제거
+#txt <- gsub("제거할 문자", "",데이터프레임 이름)
+
+
